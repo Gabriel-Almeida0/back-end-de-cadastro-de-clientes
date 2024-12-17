@@ -1,16 +1,13 @@
 const axios = require('axios');
 const readline = require('readline');
 
-// Configuração do readline para capturar entrada do usuário
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
 
-// Base URL da sua API
 const baseURL = 'http://localhost:5000';
 
-// Função para fazer GET
 const fazerGET = async () => {
   const idGET = await capturarIdCliente();
   try {
@@ -21,7 +18,6 @@ const fazerGET = async () => {
   }
 };
 
-// Função para fazer POST
 const fazerPOST = async (cliente) => {
   try {
     const response = await axios.post(`${baseURL}/cadastro`, cliente);
@@ -31,10 +27,9 @@ const fazerPOST = async (cliente) => {
   }
 };
 
-// Função para fazer PUT (atualização completa)
 const fazerPUT = async (clienteAtualizado) => {
-  const idPUT = '1'; // ID fixo ou fornecido pelo servidor
-  console.log(`Realizando PUT com ID: ${idPUT} e dados: ${JSON.stringify(clienteAtualizado)}`); // Log para depuração
+  const idPUT = '1';
+  console.log(`Realizando PUT com ID: ${idPUT} e dados: ${JSON.stringify(clienteAtualizado)}`);
   try {
     const response = await axios.put(`${baseURL}/cliente/${idPUT}`, clienteAtualizado);
     console.log('\nResposta PUT:', response.status, response.data);
@@ -49,12 +44,11 @@ const fazerPUT = async (clienteAtualizado) => {
   }
 };
 
-// Função para fazer PATCH (atualização parcial)
 const fazerPATCH = async () => {
-  const idPATCH = await capturarIdCliente();  // Captura o ID do cliente
-  const clienteParcial = await capturarDadosCliente();  // Captura os dados a serem atualizados
+  const idPATCH = await capturarIdCliente();
+  const clienteParcial = await capturarDadosCliente();
 
-  console.log(`Realizando PATCH com ID: ${idPATCH} e dados: ${JSON.stringify(clienteParcial)}`); // Log para depuração
+  console.log(`Realizando PATCH com ID: ${idPATCH} e dados: ${JSON.stringify(clienteParcial)}`);
 
   try {
     const response = await axios.patch(`${baseURL}/cliente/${idPATCH}`, clienteParcial);
@@ -70,7 +64,6 @@ const fazerPATCH = async () => {
   }
 };
 
-// Função para fazer DELETE
 const fazerDELETE = async (id) => {
   try {
     const response = await axios.delete(`${baseURL}/cliente/${id}`);
@@ -80,7 +73,6 @@ const fazerDELETE = async (id) => {
   }
 };
 
-// Função para capturar a entrada do usuário sobre qual método HTTP usar
 const capturarEntrada = () => {
   return new Promise((resolve) => {
     rl.question('\nEscolha o método HTTP (GET, POST, PUT, PATCH, DELETE) ou digite "Sair" para encerrar: ', (metodo) => {
@@ -89,7 +81,6 @@ const capturarEntrada = () => {
   });
 };
 
-// Função para capturar os dados necessários para os métodos POST, PUT ou PATCH
 const capturarDadosCliente = () => {
   return new Promise((resolve) => {
     rl.question('Digite os dados do cliente (nome, idade, celular): ', (dados) => {
@@ -97,7 +88,7 @@ const capturarDadosCliente = () => {
 
       if (!nome || !idade || !celular || isNaN(parseInt(idade.trim())) || !/^\d{2}\d{9}$/.test(celular.trim())) {
         console.log('Dados inválidos! Certifique-se de digitar nome, idade e celular corretamente.');
-        resolve(capturarDadosCliente()); // Chama novamente caso o dado seja inválido
+        resolve(capturarDadosCliente());
       } else {
         resolve({ nome: nome.trim(), idade: parseInt(idade.trim()), celular: celular.trim() });
       }
@@ -105,13 +96,12 @@ const capturarDadosCliente = () => {
   });
 };
 
-// Função para capturar ID do cliente
 const capturarIdCliente = () => {
   return new Promise((resolve) => {
     rl.question('Digite o ID do cliente: ', (id) => {
       if (isNaN(parseInt(id.trim()))) {
         console.log('ID inválido! O ID deve ser um número.');
-        resolve(capturarIdCliente()); // Chama novamente caso o ID seja inválido
+        resolve(capturarIdCliente());
       } else {
         resolve(id.trim());
       }
@@ -119,7 +109,6 @@ const capturarIdCliente = () => {
   });
 };
 
-// Função principal para controle de fluxo
 const menuPrincipal = async () => {
   let continuar = true;
 
@@ -134,7 +123,7 @@ const menuPrincipal = async () => {
 
     switch (metodo) {
       case 'GET':
-        await fazerGET();  // Agora o GET solicita o ID
+        await fazerGET();
         break;
 
       case 'POST':
@@ -144,11 +133,11 @@ const menuPrincipal = async () => {
 
       case 'PUT':
         const clientePUT = await capturarDadosCliente();
-        await fazerPUT(clientePUT); // Não precisa solicitar o ID no PUT
+        await fazerPUT(clientePUT);
         break;
 
       case 'PATCH':
-        await fazerPATCH(); // Agora o PATCH solicita o ID e os dados a serem atualizados
+        await fazerPATCH();
         break;
 
       case 'DELETE':
@@ -163,5 +152,4 @@ const menuPrincipal = async () => {
   }
 };
 
-// Inicia o menu principal
 menuPrincipal();
