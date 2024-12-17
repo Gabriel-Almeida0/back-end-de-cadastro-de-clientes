@@ -1,9 +1,7 @@
-// db.js
-require('dotenv').config();  // Carregar variáveis de ambiente do .env
+require('dotenv').config();  
 
-const mysql = require('mysql2/promise');  // Usar a versão com Promise
+const mysql = require('mysql2/promise');  
 
-// Configuração do pool de conexões do MySQL
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -14,7 +12,6 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-// Funções para manipulação do banco de dados
 const findClienteById = async (id) => {
   const [rows] = await pool.execute('SELECT * FROM clientes WHERE id = ?', [id]);
   return rows;
